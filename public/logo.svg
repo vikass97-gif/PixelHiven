@@ -1,0 +1,24 @@
+<svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" width="44" height="44" rx="12" fill="#4F46E5"/>
+
+  <rect x="18" y="18" width="8" height="8" rx="2" fill="white"/>
+  <rect x="28" y="18" width="8" height="8" rx="2" fill="white"/>
+  <rect x="18" y="28" width="8" height="8" rx="2" fill="white"/>
+  <rect x="28" y="28" width="8" height="8" rx="2" fill="white"/>
+  <rect x="18" y="38" width="8" height="8" rx="2" fill="white"/>
+
+  <text x="68" y="35"
+        font-family="Inter, Arial, sans-serif"
+        font-size="24"
+        font-weight="700"
+        fill="#111827">
+    PixelHaven
+  </text>
+
+  <text x="68" y="51"
+        font-family="Inter, Arial, sans-serif"
+        font-size="10"
+        fill="#6B7280">
+    Premium Digital Products
+  </text>
+</svg>
