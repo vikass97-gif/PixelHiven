@@ -1,6 +1,9 @@
-export const featuredProducts = [
+import { Product } from "@/types/product";
+
+export const featuredProducts: Product[] = [
   {
     id: 1,
+    slug: "nextjs-saas-starter-kit",
     title: "Next.js SaaS Starter Kit",
     category: "Code & Software",
     description:
@@ -13,6 +16,7 @@ export const featuredProducts = [
   },
   {
     id: 2,
+    slug: "figma-design-system",
     title: "Figma Design System",
     category: "UI / UX",
     description:
@@ -25,6 +29,7 @@ export const featuredProducts = [
   },
   {
     id: 3,
+    slug: "ai-prompt-collection",
     title: "AI Prompt Collection",
     category: "AI",
     description:
@@ -37,6 +42,7 @@ export const featuredProducts = [
   },
   {
     id: 4,
+    slug: "3d-icon-pack",
     title: "3D Icon Pack",
     category: "Graphics",
     description:
@@ -49,6 +55,7 @@ export const featuredProducts = [
   },
   {
     id: 5,
+    slug: "ultimate-notion-workspace",
     title: "Ultimate Notion Workspace",
     category: "Notion",
     description:
@@ -61,6 +68,7 @@ export const featuredProducts = [
   },
   {
     id: 6,
+    slug: "lightroom-presets",
     title: "Lightroom Presets",
     category: "Photography",
     description:

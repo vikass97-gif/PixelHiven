@@ -1,23 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
+
 import { featuredProducts } from "@/data/featured-products";
+import AddToCartButton from "@/components/ui/AddToCartButton";
 
 export default function FeaturedProducts() {
   return (
-    <section className="py-24 bg-gray-50/50">
+    <section className="bg-gray-50/50 py-24">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between">
           <div>
             <span className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
-              Curated Assets
+              Featured Collection
             </span>
 
             <h2 className="mt-2 text-4xl font-extrabold tracking-tight text-gray-900">
-              Featured Products
+              Featured Digital Products
             </h2>
 
-            <p className="mt-3 max-w-2xl text-gray-600">
-              Discover top-rated premium digital products crafted for creators and developers.
+            <p className="mt-3 max-w-2xl text-lg text-gray-600">
+              Discover our premium collection of digital assets for developers,
+              designers, creators, and entrepreneurs.
             </p>
           </div>
 
@@ -33,49 +36,54 @@ export default function FeaturedProducts() {
           {featuredProducts.map((product) => (
             <div
               key={product.id}
-              className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl"
+              className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
             >
               {/* Product Image */}
-              <div className="relative h-52 w-full overflow-hidden bg-gray-100">
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-indigo-700 shadow-sm backdrop-blur-md">
-                  {product.badge}
-                </span>
-              </div>
+              <Link href={`/product/${product.slug}`}>
+                <div className="relative h-60 overflow-hidden">
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    sizes="(max-width:768px)100vw,(max-width:1200px)50vw,33vw"
+                    className="object-cover transition duration-500 group-hover:scale-105"
+                  />
+
+                  <div className="absolute left-4 top-4">
+                    <span className="rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white">
+                      {product.badge}
+                    </span>
+                  </div>
+                </div>
+              </Link>
 
               {/* Product Content */}
               <div className="p-6">
-                <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600">
+                <span className="text-xs font-semibold uppercase tracking-widest text-indigo-600">
                   {product.category}
                 </span>
 
-                <h3 className="mt-2 text-xl font-bold text-gray-900 transition group-hover:text-indigo-600">
-                  {product.title}
-                </h3>
+                <Link href={`/product/${product.slug}`}>
+                  <h3 className="mt-3 text-xl font-bold text-gray-900 transition hover:text-indigo-600">
+                    {product.title}
+                  </h3>
+                </Link>
 
-                <p className="mt-2 text-sm leading-relaxed text-gray-600 line-clamp-2">
+                <p className="mt-3 line-clamp-2 text-sm leading-6 text-gray-600">
                   {product.description}
                 </p>
 
-                <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4 text-xs text-gray-500">
+                <div className="mt-5 flex items-center justify-between text-sm text-gray-500">
                   <span>⭐ {product.rating}</span>
                   <span>{product.sales}</span>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-2xl font-extrabold text-gray-900">
+                <div className="mt-6 flex items-center justify-between">
+                  <span className="text-3xl font-extrabold text-gray-900">
                     {product.price}
                   </span>
 
-                  <button className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-indigo-700">
-                    Buy Now
-                  </button>
+                  <AddToCartButton product={product} />
                 </div>
               </div>
             </div>

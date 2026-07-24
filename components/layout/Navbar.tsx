@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import CartButton from "@/components/layout/CartButton";
 const links = [
   { href: "/", label: "Accueil" },
   { href: "/shop", label: "Boutique" },
