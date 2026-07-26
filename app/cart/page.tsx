@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 
 export default function CartPage() {
+  const [loading, setLoading] = useState(false);
+
   const {
     items,
     removeFromCart,
@@ -13,6 +16,34 @@ export default function CartPage() {
     decreaseQuantity,
     totalPrice,
   } = useCartStore();
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          total: totalPrice(),
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.pay_url) {
+        // Redirige vers la page de paiement Cryptomus
+        window.location.href = data.pay_url;
+      } else {
+        alert(data.error || "Payment error. Make sure you are logged in.");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Checkout failed.");
+      setLoading(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -123,8 +154,12 @@ export default function CartPage() {
               </span>
             </div>
 
-            <button className="mt-8 w-full rounded-xl bg-indigo-600 py-4 text-lg font-bold text-white transition hover:bg-indigo-700">
-              Proceed to Checkout
+            <button
+              onClick={handleCheckout}
+              disabled={loading}
+              className="mt-8 w-full rounded-xl bg-indigo-600 py-4 text-lg font-bold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Redirecting to payment..." : "Proceed to Checkout"}
             </button>
 
             <Link
