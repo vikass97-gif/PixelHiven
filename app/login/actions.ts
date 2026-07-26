@@ -1,7 +1,8 @@
 "use server";
 
 import { signIn } from "@/auth";
-import loginAction from "./actions";
+import { AuthError } from "next-auth";
+
 export default async function loginAction(formData: FormData) {
   try {
     await signIn("credentials", {
