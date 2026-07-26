@@ -1,22 +1,17 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
+    // --- TEST TEMPORAIRE ---
+    // On ignore la session pour voir si Cryptomus fonctionne
+    const user = await prisma.user.findFirst();
+    
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "No user in database" }, { status: 404 });
     }
+    // -----------------------
 
     const { items, total } = await req.json();
 
@@ -68,16 +63,16 @@ export async function POST(req: Request) {
 
     const result = await response.json();
 
+    console.log("CRYPTOMUS RESPONSE:", JSON.stringify(result, null, 2));
+
     if (!result.result || !result.result.url) {
-      console.error("Cryptomus error:", result);
-      return NextResponse.json({ error: "Payment gateway error" }, { status: 500 });
+      return NextResponse.json({ error: "Payment gateway error: " + (result.message || "Unknown") }, { status: 500 });
     }
 
-    // 4. Renvoyer l'URL de paiement au frontend
     return NextResponse.json({ pay_url: result.result.url });
 
   } catch (error) {
-    console.error(error);
+    console.error("Server error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

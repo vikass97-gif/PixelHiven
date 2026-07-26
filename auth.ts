@@ -1,19 +1,15 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
-import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
     Credentials({
-      name: "credentials",
+      name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -31,23 +27,43 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const passwordMatch = await bcrypt.compare(
+        const isValidPassword = await bcrypt.compare(
           credentials.password as string,
           user.password
         );
 
-        if (!passwordMatch) {
+        if (!isValidPassword) {
           return null;
         }
 
-        return user;
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as any).role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        // CORRECTION ICI : On prend token.id OU token.sub (garanti à 100%)
+        session.user.id = (token.id || token.sub) as string;
+        (session.user as any).role = token.role;
+      }
+      return session;
+    },
   },
   pages: {
     signIn: "/login",
   },
+  secret: process.env.AUTH_SECRET || "super-secret-key-for-pixelhiven-2026",
 });

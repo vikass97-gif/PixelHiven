@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { featuredProducts } from "@/data/featured-products";
+import { prisma } from "@/lib/prisma";
 import AddToCartButton from "@/components/ui/AddToCartButton";
 
 type ProductPageProps = {
@@ -10,18 +10,24 @@ type ProductPageProps = {
   }>;
 };
 
-export default async function ProductPage({
-  params,
-}: ProductPageProps) {
+export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
 
-  const product = featuredProducts.find(
-    (item) => item.slug === slug
-  );
+  // On cherche le produit dans la base de données avec son slug
+  const product = await prisma.product.findUnique({
+    where: { slug: slug },
+  });
 
+  // Si le produit n'existe pas, on affiche la page 404
   if (!product) {
     notFound();
   }
+
+  // On adapte le prix pour le panier
+  const cartProduct = {
+    ...product,
+    price: `$${product.price.toFixed(2)}`,
+  };
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -61,15 +67,12 @@ export default async function ProductPage({
 
             <div className="mt-8 flex items-center gap-6">
               <span className="text-5xl font-extrabold text-gray-900">
-                {product.price}
-              </span>
-              <span className="text-sm font-medium text-gray-500">
-                ⭐ {product.rating} · {product.sales}
+                ${product.price.toFixed(2)}
               </span>
             </div>
 
             <div className="mt-10">
-              <AddToCartButton product={product} />
+              <AddToCartButton product={cartProduct} />
             </div>
 
             <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">

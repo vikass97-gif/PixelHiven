@@ -1,10 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { featuredProducts } from "@/data/featured-products";
+import { prisma } from "@/lib/prisma";
 import AddToCartButton from "@/components/ui/AddToCartButton";
 
-export default function FeaturedProducts() {
+// Ce composant est maintenant asynchrone car il va chercher les données en base
+export default async function FeaturedProducts() {
+  const products = await prisma.product.findMany({
+    take: 6, // Prend les 6 premiers
+    orderBy: { createdAt: "desc" }, // Les plus récents d'abord
+  });
+
   return (
     <section className="bg-gray-50/50 py-24">
       <div className="mx-auto max-w-7xl px-6">
@@ -33,61 +39,58 @@ export default function FeaturedProducts() {
         </div>
 
         <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-            >
-              {/* Product Image */}
-              <Link href={`/product/${product.slug}`}>
-                <div className="relative h-60 overflow-hidden">
-                  <Image
-                    src={product.image}
-                    alt={product.title}
-                    fill
-                    sizes="(max-width:768px)100vw,(max-width:1200px)50vw,33vw"
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                  />
+          {products.map((product) => {
+            // On adapte le prix pour le panier
+            const cartProduct = {
+              ...product,
+              price: `$${product.price.toFixed(2)}`,
+            };
 
-                  <div className="absolute left-4 top-4">
-                    <span className="rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold text-white">
-                      {product.badge}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Product Content */}
-              <div className="p-6">
-                <span className="text-xs font-semibold uppercase tracking-widest text-indigo-600">
-                  {product.category}
-                </span>
-
+            return (
+              <div
+                key={product.id}
+                className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+              >
+                {/* Product Image */}
                 <Link href={`/product/${product.slug}`}>
-                  <h3 className="mt-3 text-xl font-bold text-gray-900 transition hover:text-indigo-600">
-                    {product.title}
-                  </h3>
+                  <div className="relative h-60 overflow-hidden">
+                    <Image
+                      src={product.image}
+                      alt={product.title}
+                      fill
+                      sizes="(max-width:768px)100vw,(max-width:1200px)50vw,33vw"
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  </div>
                 </Link>
 
-                <p className="mt-3 line-clamp-2 text-sm leading-6 text-gray-600">
-                  {product.description}
-                </p>
-
-                <div className="mt-5 flex items-center justify-between text-sm text-gray-500">
-                  <span>⭐ {product.rating}</span>
-                  <span>{product.sales}</span>
-                </div>
-
-                <div className="mt-6 flex items-center justify-between">
-                  <span className="text-3xl font-extrabold text-gray-900">
-                    {product.price}
+                {/* Product Content */}
+                <div className="p-6">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-indigo-600">
+                    {product.category}
                   </span>
 
-                  <AddToCartButton product={product} />
+                  <Link href={`/product/${product.slug}`}>
+                    <h3 className="mt-3 text-xl font-bold text-gray-900 transition hover:text-indigo-600">
+                      {product.title}
+                    </h3>
+                  </Link>
+
+                  <p className="mt-3 line-clamp-2 text-sm leading-6 text-gray-600">
+                    {product.description}
+                  </p>
+
+                  <div className="mt-6 flex items-center justify-between">
+                    <span className="text-3xl font-extrabold text-gray-900">
+                      ${product.price.toFixed(2)}
+                    </span>
+
+                    <AddToCartButton product={cartProduct} />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
