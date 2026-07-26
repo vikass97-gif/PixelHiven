@@ -11,7 +11,7 @@ export async function GET(
   const session = await auth();
 
   if (!session?.user?.email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const { productId } = await params;
@@ -32,24 +32,34 @@ export async function GET(
   );
 
   if (!hasPurchased) {
-    return NextResponse.json({ error: "Access denied. You have not purchased this product." }, { status: 403 });
+    return new NextResponse("Access denied. You have not purchased this product.", { status: 403 });
   }
 
-  // 2. Chemin vers le fichier (on mappe l'ID du produit à son fichier réel)
-  // Pour l'instant, on force le fichier product-1.txt pour la démo
-  const filePath = path.join(process.cwd(), "private", "downloads", "product-1.txt");
+  // 2. Récupérer le produit pour connaître son fichier
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+  });
+
+  if (!product || !product.filePath) {
+    return new NextResponse("File not configured for this product.", { status: 404 });
+  }
+
+  // 3. Chemin vers le fichier réel sur le serveur
+  const filePath = path.join(process.cwd(), product.filePath);
 
   try {
     const fileBuffer = fs.readFileSync(filePath);
-    
-    // 3. Renvoyer le fichier en tant que téléchargement
+    const fileName = path.basename(filePath);
+
+    // 4. Renvoyer le fichier en tant que téléchargement
     return new NextResponse(fileBuffer, {
       headers: {
-        "Content-Disposition": 'attachment; filename="product-1.txt"',
-        "Content-Type": "text/plain",
+        "Content-Disposition": `attachment; filename="${fileName}"`,
+        "Content-Type": "application/octet-stream",
       },
     });
   } catch (error) {
-    return NextResponse.json({ error: "File not found on server." }, { status: 404 });
+    console.error("File read error:", error);
+    return new NextResponse("File not found on server.", { status: 404 });
   }
 }
