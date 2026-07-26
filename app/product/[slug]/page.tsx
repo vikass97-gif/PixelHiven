@@ -25,9 +25,32 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   // On adapte le prix pour le panier
   const cartProduct = {
-    ...product,
-    price: `$${product.price.toFixed(2)}`,
-  };
+  id: String(product.id),
+  slug: product.slug,
+  title: product.title,
+  category: product.category,
+  description: product.description,
+  price:
+    typeof product.price === "number"
+      ? `$${product.price.toFixed(2)}`
+      : product.price,
+  image: product.image,
+
+  fileUrl: product.fileUrl,
+
+  rating:
+    product.rating !== undefined
+      ? String(product.rating)
+      : "5.0",
+
+  sales:
+    product.sales !== undefined
+      ? `${product.sales} sales`
+      : "0 sales",
+
+  badge:
+    product.badge ?? "Featured",
+};
 
   return (
     <main className="min-h-screen bg-gray-50">

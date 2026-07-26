@@ -69,14 +69,29 @@ model VerificationToken {
 // Table des produits Numériques
 model Product {
   id          String   @id @default(cuid())
+
   slug        String   @unique
+
   title       String
+
   description String   @db.Text
-  price       Float
-  image       String
-  filePath    String
+
   category    String
+
+  image       String
+
+  filePath    String
+
+  price       Float
+
+  rating      Float    @default(5)
+
+  sales       Int      @default(0)
+
+  badge       String   @default("New")
+
   createdAt   DateTime @default(now())
+
   updatedAt   DateTime @updatedAt
 
   orderItems  OrderItem[]

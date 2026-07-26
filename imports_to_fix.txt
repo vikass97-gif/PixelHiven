@@ -1,0 +1,3 @@
+./components/ui/AddToCartButton.tsx:import { Product } from "@/types/product";
+./data/featured-products.ts:import { Product } from "@/types/product";
+./store/useCartStore.ts:import { Product } from "@/types/product";
