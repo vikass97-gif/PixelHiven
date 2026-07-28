@@ -65,5 +65,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  secret: process.env.AUTH_SECRET || "super-secret-key-for-pixelhiven-2026",
+  secret: process.env.AUTH_SECRET,
 });
