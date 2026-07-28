@@ -40,12 +40,6 @@ export default async function FeaturedProducts() {
 
         <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => {
-            // On adapte le prix pour le panier
-            const cartProduct = {
-              ...product,
-              price: `$${product.price.toFixed(2)}`,
-            };
-
             return (
               <div
                 key={product.id}
@@ -81,11 +75,13 @@ export default async function FeaturedProducts() {
                   </p>
 
                   <div className="mt-6 flex items-center justify-between">
+                    {/* Le design du prix reste intact ! */}
                     <span className="text-3xl font-extrabold text-gray-900">
                       ${product.price.toFixed(2)}
                     </span>
 
-                    <AddToCartButton product={cartProduct} />
+                    {/* On passe le VRAI objet product (avec le prix en nombre) au bouton */}
+                    <AddToCartButton product={product} />
                   </div>
                 </div>
               </div>

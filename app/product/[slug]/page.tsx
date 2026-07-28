@@ -23,35 +23,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  // On adapte le prix pour le panier
-  const cartProduct = {
-  id: String(product.id),
-  slug: product.slug,
-  title: product.title,
-  category: product.category,
-  description: product.description,
-  price:
-    typeof product.price === "number"
-      ? `$${product.price.toFixed(2)}`
-      : product.price,
-  image: product.image,
-
-  fileUrl: product.fileUrl,
-
-  rating:
-    product.rating !== undefined
-      ? String(product.rating)
-      : "5.0",
-
-  sales:
-    product.sales !== undefined
-      ? `${product.sales} sales`
-      : "0 sales",
-
-  badge:
-    product.badge ?? "Featured",
-};
-
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-7xl px-6 py-16">
@@ -95,7 +66,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div className="mt-10">
-              <AddToCartButton product={cartProduct} />
+              {/* On passe directement le produit au bouton, sans le modifier ! */}
+              <AddToCartButton product={product} />
             </div>
 
             <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">

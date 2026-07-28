@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product } from "@/types/product";
+import { Product } from "@/modules/products/types/product";
 
 interface CartItem extends Product {
   quantity: number;
@@ -96,10 +96,10 @@ export const useCartStore = create<CartStore>()(
           0
         ),
 
+      // C'EST ICI QU'ON A CORRIGÉ ! Plus besoin de replace()
       totalPrice: () =>
         get().items.reduce((total, item) => {
-          const price = Number(item.price.replace("$", ""));
-          return total + price * item.quantity;
+          return total + item.price * item.quantity;
         }, 0),
     }),
     {

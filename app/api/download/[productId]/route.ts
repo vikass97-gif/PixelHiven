@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import fs from "fs";
+import { readFile } from "fs/promises";
 import path from "path";
+
+// Dossier racine autorisé — RIEN ne peut sortir d'ici
+const DOWNLOADS_DIR = path.join(process.cwd(), "private", "downloads");
 
 export async function GET(
   req: Request,
@@ -16,7 +19,6 @@ export async function GET(
 
   const { productId } = await params;
 
-  // 1. Vérifier si l'utilisateur a bien acheté CE produit
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
     include: {
@@ -27,35 +29,44 @@ export async function GET(
     },
   });
 
-  const hasPurchased = user?.orders.some(order =>
-    order.orderItems.some(item => item.productId === productId)
+  const hasPurchased = user?.orders.some((order) =>
+    order.orderItems.some((item) => item.productId === productId)
   );
 
   if (!hasPurchased) {
-    return new NextResponse("Access denied. You have not purchased this product.", { status: 403 });
+    return new NextResponse(
+      "Access denied. You have not purchased this product.",
+      { status: 403 }
+    );
   }
 
-  // 2. Récupérer le produit pour connaître son fichier
   const product = await prisma.product.findUnique({
     where: { id: productId },
   });
 
-  if (!product || !product.filePath) {
-    return new NextResponse("File not configured for this product.", { status: 404 });
+  if (!product?.filePath) {
+    return new NextResponse("File not configured for this product.", {
+      status: 404,
+    });
   }
 
-  // 3. Chemin vers le fichier réel sur le serveur
-  const filePath = path.join(process.cwd(), product.filePath);
+  // 🔒 Sécurité : on ne garde que le nom du fichier
+  const safeFileName = path.basename(product.filePath);
+  const absolutePath = path.join(DOWNLOADS_DIR, safeFileName);
+
+  if (!absolutePath.startsWith(DOWNLOADS_DIR)) {
+    return new NextResponse("Invalid file path.", { status: 400 });
+  }
 
   try {
-    const fileBuffer = fs.readFileSync(filePath);
-    const fileName = path.basename(filePath);
+    const fileBuffer = await readFile(absolutePath);
 
-    // 4. Renvoyer le fichier en tant que téléchargement
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
-        "Content-Disposition": `attachment; filename="${fileName}"`,
+        "Content-Disposition": `attachment; filename="${safeFileName}"`,
         "Content-Type": "application/octet-stream",
+        "Content-Length": String(fileBuffer.byteLength),
+        "Cache-Control": "private, no-store",
       },
     });
   } catch (error) {

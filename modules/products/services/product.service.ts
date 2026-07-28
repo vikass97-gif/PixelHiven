@@ -1,27 +1,22 @@
 import { prisma } from "@/lib/prisma";
+import { Product } from "../types/product";
 
-export async function getProducts() {
+export async function getProducts(): Promise<Product[]> {
   return prisma.product.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
   });
 }
 
-export async function getFeaturedProducts() {
+export async function getFeaturedProducts(limit: number = 6): Promise<Product[]> {
   return prisma.product.findMany({
-    take: 6,
-    orderBy: {
-      sales: "desc",
-    },
+    take: limit,
+    orderBy: { sales: "desc" },
   });
 }
 
-export async function getProductBySlug(slug: string) {
+export async function getProductBySlug(slug: string): Promise<Product | null> {
   return prisma.product.findUnique({
-    where: {
-      slug,
-    },
+    where: { slug },
   });
 }
 
@@ -34,9 +29,12 @@ export async function createProduct(data: {
   filePath: string;
   price: number;
   badge: string;
-}) {
+}): Promise<Product> {
   return prisma.product.create({
-    data,
+    data: {
+      ...data,
+      price: Number(data.price),
+    },
   });
 }
 
@@ -52,17 +50,15 @@ export async function updateProduct(
     price: number;
     badge: string;
   }>
-) {
+): Promise<Product> {
   return prisma.product.update({
     where: { id },
     data,
   });
 }
 
-export async function deleteProduct(id: string) {
-  return prisma.product.delete({
-    where: {
-      id,
-    },
+export async function deleteProduct(id: string): Promise<void> {
+  await prisma.product.delete({
+    where: { id },
   });
 }

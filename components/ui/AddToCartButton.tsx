@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/types/product";
+import { Product } from "@/modules/products/types/product";
 import { useCartStore } from "@/store/useCartStore";
 
 interface AddToCartButtonProps {

@@ -2,12 +2,14 @@ export interface Product {
   id: string;
   slug: string;
   title: string;
-  category: string;
   description: string;
-  price: string;
+  category: string;
   image: string;
-  fileUrl?: string;
-  rating: string;
-  sales: string;
+  filePath: string;
+  price: number;
+  rating: number;
+  sales: number;
   badge: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

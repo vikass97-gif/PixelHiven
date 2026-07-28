@@ -51,12 +51,6 @@ export default async function ShopPage() {
         ) : (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {products.map((product) => {
-              // On adapte le prix (qui est un nombre en BDD) pour qu'il soit compatible avec le panier
-              const cartProduct = {
-                ...product,
-                price: `$${product.price.toFixed(2)}`,
-              };
-
               return (
                 <div
                   key={product.id}
@@ -99,7 +93,8 @@ export default async function ShopPage() {
                         ${product.price.toFixed(2)}
                       </span>
 
-                      <AddToCartButton product={cartProduct} />
+                      {/* Plus d'intermédiaire ! On injecte directement le vrai produit BDD */}
+                      <AddToCartButton product={product} />
                     </div>
                   </div>
                 </div>

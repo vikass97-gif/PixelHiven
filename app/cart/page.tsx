@@ -103,7 +103,7 @@ export default function CartPage() {
                     </p>
 
                     <p className="mt-3 text-2xl font-bold text-indigo-600">
-                      {item.price}
+                      ${item.price.toFixed(2)}
                     </p>
                   </div>
 
