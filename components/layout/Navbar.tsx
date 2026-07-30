@@ -19,12 +19,17 @@ function NavbarContent() {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        {/* Logo Moderne */}
+        {/* Logo Moderne + Slogan */}
         <Link href="/" className="flex items-center gap-3">
           <Logo />
-          <h1 className="text-xl font-extrabold tracking-tight text-gray-900">
-            PixelHiven
-          </h1>
+          <div>
+            <h1 className="text-xl font-extrabold leading-tight tracking-tight text-gray-900">
+              PixelHiven
+            </h1>
+            <p className="text-xs text-gray-500">
+              Premium Digital Products
+            </p>
+          </div>
         </Link>
 
         {/* Navigation */}
