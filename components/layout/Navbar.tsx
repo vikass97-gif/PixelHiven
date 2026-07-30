@@ -16,10 +16,9 @@ const navigation = [
 function NavbarContent() {
   const { data: session, status } = useSession();
 
-  const handleSignOut = () => {
-    // Redirection dynamique vers le domaine actuel du navigateur
-    const origin = typeof window !== "undefined" ? window.location.origin : "/";
-    signOut({ callbackUrl: origin });
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    window.location.href = window.location.origin;
   };
 
   return (
