@@ -16,6 +16,12 @@ const navigation = [
 function NavbarContent() {
   const { data: session, status } = useSession();
 
+  const handleSignOut = () => {
+    // Redirection dynamique vers le domaine actuel du navigateur
+    const origin = typeof window !== "undefined" ? window.location.origin : "/";
+    signOut({ callbackUrl: origin });
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
@@ -57,7 +63,7 @@ function NavbarContent() {
                 {session.user.name || session.user.email?.split("@")[0]}
               </span>
               <button
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={handleSignOut}
                 className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 hover:text-red-600"
               >
                 Sign Out
