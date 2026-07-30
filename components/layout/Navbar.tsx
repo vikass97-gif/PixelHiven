@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signOut, SessionProvider } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import CartButton from "@/components/layout/CartButton";
+import Logo from "@/components/layout/Logo";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -18,21 +19,12 @@ function NavbarContent() {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        {/* Logo */}
+        {/* Logo Moderne */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 shadow-lg">
-            <span className="text-lg font-bold text-white">P</span>
-          </div>
-
-          <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-gray-900">
-              PixelHiven
-            </h1>
-
-            <p className="text-xs text-gray-500">
-              Premium Digital Products
-            </p>
-          </div>
+          <Logo />
+          <h1 className="text-xl font-extrabold tracking-tight text-gray-900">
+            PixelHiven
+          </h1>
         </Link>
 
         {/* Navigation */}
@@ -91,8 +83,6 @@ function NavbarContent() {
 
 export default function Navbar() {
   return (
-    <SessionProvider>
-      <NavbarContent />
-    </SessionProvider>
+    <NavbarContent />
   );
 }
