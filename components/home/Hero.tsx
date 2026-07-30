@@ -8,10 +8,6 @@ export default function Hero() {
 
       <div className="mx-auto flex min-h-[90vh] max-w-7xl items-center px-6">
         <div className="max-w-3xl">
-          <span className="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-600">
-            Premium Digital Products
-          </span>
-
           <h1 className="mt-8 text-5xl font-extrabold leading-tight tracking-tight text-gray-900 md:text-7xl">
             Everything You Need
             <br />
