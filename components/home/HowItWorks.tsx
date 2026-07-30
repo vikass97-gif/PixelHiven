@@ -47,9 +47,9 @@ export default function HowItWorks() {
             const Icon = step.icon;
 
             return (
-              <div key={step.step} className="relative text-center">
-                {/* Step Number */}
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-7xl font-extrabold text-indigo-100">
+              <div key={step.step} className="text-center">
+                {/* Numéro placé au-dessus, bien espacé */}
+                <span className="mb-6 block text-5xl font-extrabold text-indigo-100">
                   {step.step}
                 </span>
 
