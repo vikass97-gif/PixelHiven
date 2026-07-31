@@ -13,7 +13,7 @@ export default function RefundPage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-gray-900">Refund Policy</h1>
           <p className="mt-4 text-lg text-gray-600">
-            Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            Last updated: July 31, 2026
           </p>
         </div>
 

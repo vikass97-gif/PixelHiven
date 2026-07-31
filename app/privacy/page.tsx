@@ -12,7 +12,9 @@ export default function PrivacyPage() {
         <div className="rounded-3xl border border-gray-200 bg-white p-8 md:p-12 shadow-sm">
           <span className="text-sm font-semibold uppercase tracking-widest text-indigo-600">Legal</span>
           <h1 className="mt-2 text-4xl font-extrabold text-gray-900">Privacy Policy</h1>
-          <p className="mt-2 text-sm text-gray-500">Last updated: {new Date().toLocaleDateString()}</p>
+          <p className="mt-2 text-sm text-gray-500">
+              Last updated: July 31, 2026
+            </p>
 
           <div className="mt-8 space-y-6 text-gray-600 leading-relaxed">
             <p>At PixelHiven, we respect your privacy and are committed to protecting your personal data.</p>
