@@ -78,7 +78,7 @@ export default function Footer() {
               </li>
 
               <li>
-                <Link href="/refund" className="hover:text-indigo-600 transition font-medium text-indigo-600">
+                <Link href="/refund" className="hover:text-indigo-600 transition">
                   Refund Policy
                 </Link>
               </li>
