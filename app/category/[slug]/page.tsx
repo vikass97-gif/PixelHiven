@@ -1,9 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { categories } from "@/data/categories";
 import AddToCartButton from "@/components/ui/AddToCartButton";
+import CategoryIcon from "@/components/ui/CategoryIcon";
+import ProductImage from "@/components/ui/ProductImage";
 
 type CategoryPageProps = {
   params: Promise<{
@@ -14,15 +15,12 @@ type CategoryPageProps = {
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
 
-  // 1. On cherche la catégorie dans notre fichier de données
   const currentCategory = categories.find((c) => c.slug === slug);
 
-  // Si on tape une fausse catégorie dans l'URL, on affiche 404
   if (!currentCategory) {
     notFound();
   }
 
-  // 2. On va chercher en Base de Données uniquement les produits de cette catégorie
   const products = await prisma.product.findMany({
     where: { category: currentCategory.title },
     orderBy: { createdAt: "desc" },
@@ -30,14 +28,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50/50">
-      {/* Header de la Catégorie */}
       <div className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16">
           <Link href="/" className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
             ← Back to Home
           </Link>
-          <div className="mt-4 flex items-center gap-4">
-            <span className="text-5xl">{currentCategory.icon}</span>
+          <div className="mt-6 flex items-center gap-5">
+            <CategoryIcon slug={currentCategory.slug} size="lg" />
             <h1 className="text-4xl font-extrabold text-gray-900 md:text-5xl">
               {currentCategory.title}
             </h1>
@@ -48,7 +45,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </div>
 
-      {/* Grille des Produits */}
       <div className="mx-auto max-w-7xl px-6 py-12">
         {products.length === 0 ? (
           <div className="py-24 text-center">
@@ -62,10 +58,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl"
               >
                 <div className="relative h-56 w-full overflow-hidden bg-gray-100">
-                  <Image
+                  <ProductImage
                     src={product.image}
                     alt={product.title}
-                    fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -83,7 +78,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                     <span className="text-2xl font-extrabold text-gray-900">
                       ${product.price.toFixed(2)}
                     </span>
-                    {/* On utilise le VRAI objet product, fini les bugs ! */}
                     <AddToCartButton product={product} />
                   </div>
                 </div>
