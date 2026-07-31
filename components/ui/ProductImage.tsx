@@ -12,8 +12,7 @@ interface ProductImageProps {
   priority?: boolean;
 }
 
-const DEFAULT_FALLBACK =
-  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80";
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80";
 
 export default function ProductImage({
   src,
@@ -23,7 +22,7 @@ export default function ProductImage({
   sizes,
   priority = false,
 }: ProductImageProps) {
-  const [imgSrc, setImgSrc] = useState(src || DEFAULT_FALLBACK);
+  const [imgSrc, setImgSrc] = useState(src || FALLBACK_IMAGE);
 
   return (
     <Image
@@ -35,8 +34,8 @@ export default function ProductImage({
       unoptimized
       className={className}
       onError={() => {
-        if (imgSrc !== DEFAULT_FALLBACK) {
-          setImgSrc(DEFAULT_FALLBACK);
+        if (imgSrc !== FALLBACK_IMAGE) {
+          setImgSrc(FALLBACK_IMAGE);
         }
       }}
     />
