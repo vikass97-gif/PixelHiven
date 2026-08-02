@@ -65,23 +65,6 @@ export default function Footer() {
                 </Link>
               </li>
 
-              <li>
-                <Link href="/privacy" className="hover:text-indigo-600 transition">
-                  Privacy Policy
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/terms" className="hover:text-indigo-600 transition">
-                  Terms of Service
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/refund" className="hover:text-indigo-600 transition">
-                  Refund Policy
-                </Link>
-              </li>
             </ul>
           </div>
 
