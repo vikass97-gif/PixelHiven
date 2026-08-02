@@ -1,35 +1,27 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import BlogCard from "@/components/blog/BlogCard";
+import { blogPosts } from "@/data/blog-posts";
 
-export const metadata = {
-  title: "Blog | PixelHiven",
-  description: "Resources, guides, and news for creators and digital makers.",
+export const metadata: Metadata = {
+  title: "Digital Product Guides and Resources",
+  description:
+    "Read practical guides about software licenses, digital delivery, subscriptions, and choosing digital products safely.",
+  alternates: {
+    canonical: "/blog",
+  },
+  openGraph: {
+    title: "PixelHiven Digital Product Guides",
+    description:
+      "Practical guides about software licenses, subscriptions, and digital product delivery.",
+    type: "website",
+  },
 };
 
-const articles = [
-  {
-    category: "Resources",
-    title: "How to Choose the Right Digital Assets for Your Project",
-    description:
-      "A practical guide to selecting templates, source code, graphics, and other assets that fit your goals.",
-    date: "Coming soon",
-  },
-  {
-    category: "Design",
-    title: "Why Design Systems Save Time for Modern Teams",
-    description:
-      "Discover how reusable components and consistent design systems improve product development.",
-    date: "Coming soon",
-  },
-  {
-    category: "Development",
-    title: "Starting Your Next Project with a Premium Starter Kit",
-    description:
-      "Learn how a well-structured starter kit can help you launch faster without sacrificing quality.",
-    date: "Coming soon",
-  },
-];
-
 export default function BlogPage() {
+  const featuredPosts = blogPosts.filter((post) => post.featured);
+  const otherPosts = blogPosts.filter((post) => !post.featured);
+
   return (
     <main className="min-h-screen bg-gray-50/50">
       <section className="border-b border-gray-200 bg-white">
@@ -38,58 +30,59 @@ export default function BlogPage() {
             PixelHiven Journal
           </span>
 
-          <h1 className="mt-3 text-4xl font-extrabold text-gray-900 md:text-5xl">
-            Ideas for creators and builders
+          <h1 className="mt-3 max-w-3xl text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl">
+            Practical guides for digital product buyers
           </h1>
 
-          <p className="mt-4 max-w-2xl text-lg text-gray-600">
-            Guides, inspiration, and practical resources to help you create
-            better digital products.
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-600">
+            Understand software licenses, subscriptions, digital delivery,
+            security, and the questions to ask before purchasing.
           </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <article
-              key={article.title}
-              className="flex flex-col rounded-2xl border border-gray-200 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-            >
-              <span className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
-                {article.category}
-              </span>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Featured guides
+          </h2>
 
-              <h2 className="mt-4 text-2xl font-bold leading-tight text-gray-900">
-                {article.title}
-              </h2>
-
-              <p className="mt-4 flex-1 leading-7 text-gray-600">
-                {article.description}
-              </p>
-
-              <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-5">
-                <span className="text-sm text-gray-500">{article.date}</span>
-                <span className="text-sm font-semibold text-indigo-600">
-                  Read soon →
-                </span>
-              </div>
-            </article>
-          ))}
+          <div className="mt-8 grid gap-8 md:grid-cols-2">
+            {featuredPosts.map((post) => (
+              <BlogCard key={post.slug} post={post} />
+            ))}
+          </div>
         </div>
 
-        <div className="mt-12 rounded-2xl bg-indigo-600 px-8 py-10 text-center text-white">
-          <h2 className="text-2xl font-bold">
-            More articles are coming soon.
+        {otherPosts.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Latest articles
+            </h2>
+
+            <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {otherPosts.map((post) => (
+                <BlogCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="mt-16 rounded-3xl bg-indigo-600 px-8 py-12 text-center text-white">
+          <h2 className="text-3xl font-bold">
+            Explore premium digital products
           </h2>
-          <p className="mt-3 text-indigo-100">
-            Explore our marketplace while we prepare useful resources for you.
+
+          <p className="mx-auto mt-4 max-w-2xl text-indigo-100">
+            Browse our marketplace after reviewing the guides that help you
+            choose the right product for your needs.
           </p>
+
           <Link
             href="/shop"
-            className="mt-6 inline-flex rounded-xl bg-white px-5 py-3 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50"
+            className="mt-7 inline-flex rounded-xl bg-white px-6 py-3 font-semibold text-indigo-700 transition hover:bg-indigo-50"
           >
-            Explore Products
+            Visit the marketplace
           </Link>
         </div>
       </section>
