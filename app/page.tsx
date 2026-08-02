@@ -4,6 +4,7 @@ import Categories from "@/components/home/Categories";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import HowItWorks from "@/components/home/HowItWorks";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <FeaturedProducts />
       <WhyChooseUs />
       <HowItWorks />
-    </main>
+          <ScrollToTop />
+</main>
   );
 }
