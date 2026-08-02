@@ -3,44 +3,54 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Trash2, Minus, Plus } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 
 export default function CartPage() {
   const [loading, setLoading] = useState(false);
 
-  const {
-    items,
-    removeFromCart,
-    increaseQuantity,
-    decreaseQuantity,
-    totalPrice,
-  } = useCartStore();
+  const { items, removeFromCart, totalPrice } = useCartStore();
 
   const handleCheckout = async () => {
+    if (items.length === 0 || loading) {
+      return;
+    }
+
     setLoading(true);
+
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        // On envoie seulement les identifiants.
+        // Le serveur récupère les vrais prix depuis TiDB.
         body: JSON.stringify({
-          items,
-          total: totalPrice(),
+          items: items.map((item) => ({
+            id: item.id,
+          })),
         }),
       });
 
-      const data = await response.json();
-      
-      if (data.pay_url) {
-        // Redirige vers la page de paiement Cryptomus
+      const data = await response.json().catch(() => ({
+        error: "Invalid response from the checkout server.",
+      }));
+
+      if (response.ok && data.pay_url) {
         window.location.href = data.pay_url;
-      } else {
-        alert(data.error || "Payment error. Make sure you are logged in.");
-        setLoading(false);
+        return;
       }
+
+      alert(
+        data.error ||
+          "Payment error. Please make sure that you are logged in."
+      );
     } catch (error) {
-      console.error(error);
-      alert("Checkout failed.");
+      console.error("Checkout failed:", error);
+      alert("Checkout failed. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -70,8 +80,8 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <h1 className="text-4xl font-extrabold text-gray-900">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+        <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
           Shopping Cart
         </h1>
 
@@ -81,58 +91,43 @@ export default function CartPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-6 rounded-2xl bg-white p-6 shadow-sm"
+                className="flex flex-col gap-5 rounded-2xl bg-white p-5 shadow-sm sm:flex-row sm:gap-6 sm:p-6"
               >
-                <div className="relative h-32 w-32 overflow-hidden rounded-xl">
+                <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-32 sm:w-32">
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
+                    sizes="(max-width: 640px) 100vw, 128px"
                     className="object-cover"
                   />
                 </div>
 
-                <div className="flex flex-1 flex-col justify-between">
+                <div className="flex min-w-0 flex-1 flex-col justify-between">
                   <div>
                     <h2 className="text-xl font-bold text-gray-900">
                       {item.title}
                     </h2>
 
-                    <p className="mt-2 text-gray-600">
-                      {item.category}
-                    </p>
+                    <p className="mt-2 text-gray-600">{item.category}</p>
 
                     <p className="mt-3 text-2xl font-bold text-indigo-600">
                       ${item.price.toFixed(2)}
                     </p>
                   </div>
 
-                  <div className="mt-6 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => decreaseQuantity(item.id)}
-                        className="rounded-lg border p-2 hover:bg-gray-100"
-                      >
-                        <Minus size={18} />
-                      </button>
-
-                      <span className="font-semibold">
-                        {item.quantity}
-                      </span>
-
-                      <button
-                        onClick={() => increaseQuantity(item.id)}
-                        className="rounded-lg border p-2 hover:bg-gray-100"
-                      >
-                        <Plus size={18} />
-                      </button>
+                  <div className="mt-6 flex items-center justify-between gap-4">
+                    <div className="rounded-lg bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700">
+                      1 digital license
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => removeFromCart(item.id)}
-                      className="text-red-500 transition hover:text-red-700"
+                      className="rounded-lg p-2 text-red-500 transition hover:bg-red-50 hover:text-red-700"
+                      aria-label={`Remove ${item.title} from cart`}
                     >
-                      <Trash2 />
+                      <Trash2 size={22} />
                     </button>
                   </div>
                 </div>
@@ -141,13 +136,15 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="rounded-2xl bg-white p-8 shadow-sm">
+          <aside className="h-fit rounded-2xl bg-white p-6 shadow-sm sm:p-8">
             <h2 className="text-2xl font-bold text-gray-900">
               Order Summary
             </h2>
 
             <div className="mt-8 flex items-center justify-between">
-              <span className="text-gray-600">Total</span>
+              <span className="text-gray-600">
+                {items.length} {items.length === 1 ? "product" : "products"}
+              </span>
 
               <span className="text-3xl font-extrabold text-indigo-600">
                 ${totalPrice().toFixed(2)}
@@ -155,9 +152,10 @@ export default function CartPage() {
             </div>
 
             <button
+              type="button"
               onClick={handleCheckout}
               disabled={loading}
-              className="mt-8 w-full rounded-xl bg-indigo-600 py-4 text-lg font-bold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-8 w-full rounded-xl bg-indigo-600 px-4 py-4 text-base font-bold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 sm:text-lg"
             >
               {loading ? "Redirecting to payment..." : "Proceed to Checkout"}
             </button>
@@ -168,7 +166,7 @@ export default function CartPage() {
             >
               Continue Shopping
             </Link>
-          </div>
+          </aside>
         </div>
       </div>
     </main>
