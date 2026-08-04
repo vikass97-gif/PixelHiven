@@ -41,3 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+assets/product-images-source/
+data/product-image-checklist.txt
+data/product-image-plan.csv
+data/product-image-replacement.csv
+data/product-image-summary.txt
+data/product-images-missing.txt
+data/product-images-completed.txt
