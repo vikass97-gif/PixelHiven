@@ -1,8 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import AddToCartButton from "@/components/ui/AddToCartButton";
 import ProductImage from "@/components/ui/ProductImage";
+
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://pixelhiven.com";
 
 type ProductPageProps = {
   params: Promise<{
@@ -21,16 +24,36 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const relatedProducts = await prisma.product.findMany({
-    where: {
-      category: product.category,
-      NOT: { id: product.id },
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.title,
+    "image": product.image,
+    "description": product.description,
+    "sku": product.id,
+    "brand": {
+      "@type": "Brand",
+      "name": product.category,
     },
-    take: 3,
-  });
+    "offers": {
+      "@type": "Offer",
+      "url": `${baseUrl}/product/${product.slug}`,
+      "priceCurrency": "USD",
+      "price": product.price,
+      "availability": "https://schema.org/InStock",
+      "itemCondition": "https://schema.org/NewCondition",
+    },
+  };
 
   return (
-    <main className="min-h-screen bg-gray-50/50">
+    <main className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <div className="mx-auto max-w-7xl px-6 py-16">
         <Link
           href="/shop"
@@ -40,15 +63,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </Link>
 
         <div className="mt-10 grid gap-12 lg:grid-cols-2">
+          {/* Product Image */}
           <div className="relative aspect-square overflow-hidden rounded-3xl bg-white shadow-lg border border-gray-100">
             <ProductImage
               src={product.image}
               alt={product.title}
-              priority
+              fill
               className="object-cover"
+              priority
             />
           </div>
 
+          {/* Product Information */}
           <div>
             <span className="rounded-full bg-indigo-100 px-4 py-2 text-sm font-semibold text-indigo-700">
               {product.category}
@@ -77,57 +103,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 Product Features
               </h2>
               <ul className="mt-6 space-y-4 text-gray-600">
-                <li className="flex items-center gap-3">✅ Instant Genuine License</li>
-                <li className="flex items-center gap-3">✅ Lifetime Warranty & Access</li>
+                <li className="flex items-center gap-3">✅ Instant Download</li>
+                <li className="flex items-center gap-3">✅ Lifetime Access</li>
                 <li className="flex items-center gap-3">✅ Free Updates</li>
-                <li className="flex items-center gap-3">✅ Official Download Link</li>
+                <li className="flex items-center gap-3">✅ Premium Quality</li>
                 <li className="flex items-center gap-3">✅ Secure Payment</li>
               </ul>
             </div>
           </div>
         </div>
-
-        {relatedProducts.length > 0 && (
-          <div className="mt-24 border-t border-gray-200 pt-16">
-            <h2 className="text-3xl font-extrabold text-gray-900">
-              Related Products
-            </h2>
-
-            <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {relatedProducts.map((related) => (
-                <div
-                  key={related.id}
-                  className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl"
-                >
-                  <div className="relative h-52 w-full overflow-hidden bg-gray-100">
-                    <ProductImage
-                      src={related.image}
-                      alt={related.title}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600">
-                      {related.category}
-                    </span>
-                    <Link href={`/product/${related.slug}`}>
-                      <h3 className="mt-2 text-xl font-bold text-gray-900 transition group-hover:text-indigo-600">
-                        {related.title}
-                      </h3>
-                    </Link>
-                    <div className="mt-6 flex items-center justify-between">
-                      <span className="text-2xl font-extrabold text-gray-900">
-                        ${related.price.toFixed(2)}
-                      </span>
-                      <AddToCartButton product={related} />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </main>
   );
