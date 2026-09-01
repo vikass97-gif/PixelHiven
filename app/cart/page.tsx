@@ -96,7 +96,7 @@ export default function CartPage() {
                 <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-32 sm:w-32">
                   <Image
                     src={item.image}
-                    alt={item.title}
+                    alt={`${item.title} - ${item.category} digital license`}
                     fill
                     sizes="(max-width: 640px) 100vw, 128px"
                     className="object-cover"

@@ -67,7 +67,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="relative aspect-square overflow-hidden rounded-3xl bg-white shadow-lg border border-gray-100">
             <ProductImage
               src={product.image}
-              alt={product.title}
+              alt={`${product.title} - ${product.category} digital license`}
               fill
               className="object-cover"
               priority

@@ -60,7 +60,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 <div className="relative h-56 w-full overflow-hidden bg-gray-100">
                   <ProductImage
                     src={product.image}
-                    alt={product.title}
+                    alt={`${product.title} - ${product.category} digital license`}
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />

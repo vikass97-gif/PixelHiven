@@ -101,7 +101,7 @@ export default async function DashboardPage() {
                     <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100">
                       <Image
                         src={item.product.image}
-                        alt={item.product.title}
+                        alt={`${item.product.title} - ${item.product.category} digital product`}
                         fill
                         sizes="80px"
                         className="object-cover"
