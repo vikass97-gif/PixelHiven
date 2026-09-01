@@ -4,6 +4,9 @@ import { Mail, MessageCircle, ShoppingBag } from "lucide-react";
 export const metadata = {
   title: "Contact | PixelHiven",
   description: "Contact the PixelHiven team for support, questions, and partnerships.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 const supportEmail = "support@pixelhiven.com";

@@ -3,6 +3,9 @@ import Link from "next/link";
 export const metadata = {
   title: "Refund Policy | PixelHiven",
   description: "Learn about our refund and return policy for digital products.",
+  alternates: {
+    canonical: "/refund",
+  },
 };
 
 export default function RefundPage() {

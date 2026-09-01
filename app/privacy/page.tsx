@@ -3,6 +3,9 @@ import Link from "next/link";
 export const metadata = {
   title: "Privacy Policy | PixelHiven",
   description: "Privacy Policy for PixelHiven digital marketplace.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPage() {

@@ -3,6 +3,9 @@ import Link from "next/link";
 export const metadata = {
   title: "Terms of Service | PixelHiven",
   description: "Terms of Service for PixelHiven digital marketplace.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsPage() {

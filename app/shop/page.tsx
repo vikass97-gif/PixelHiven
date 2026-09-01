@@ -7,7 +7,10 @@ import ProductImage from "@/components/ui/ProductImage";
 
 export const metadata = {
   title: "Shop | PixelHiven",
-  description: "Browse our collection of premium digital software keys, licenses, templates, and more.",
+  description: "Browse our collection of premium digital products, templates, source code, and more.",
+  alternates: {
+    canonical: "/shop",
+  },
 };
 
 export default async function ShopPage() {
